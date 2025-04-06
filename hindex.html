@@ -1,0 +1,580 @@
+import React, { useState, useEffect } from 'react';
+import { Calendar, Clock, Music, Instagram, Play, Twitter, Globe, AlertCircle, Share2, Check, Plus, Trash, ChevronDown, ChevronUp } from 'lucide-react';
+
+const MusicPromotionPlanner = () => {
+  const [releaseDate, setReleaseDate] = useState('');
+  const [releaseType, setReleaseType] = useState('single');
+  const [genre, setGenre] = useState('');
+  const [artistName, setArtistName] = useState('');
+  const [songTitle, setSongTitle] = useState('');
+  const [plan, setPlan] = useState([]);
+  const [activePhase, setActivePhase] = useState('pre-release');
+  const [customTasks, setCustomTasks] = useState([]);
+  const [newTaskText, setNewTaskText] = useState('');
+
+  const generatePlan = () => {
+    if (!releaseDate || !artistName || !songTitle) {
+      alert('Please fill in the required fields: release date, artist name, and release title.');
+      return;
+    }
+
+    const releaseDateObj = new Date(releaseDate);
+    
+    // Pre-release tasks (8 weeks before)
+    const preReleaseTasks = [
+      {
+        id: 1,
+        title: 'Finalize master recording',
+        dueDate: new Date(releaseDateObj.getTime() - 8 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'General',
+        phase: 'pre-release',
+        description: 'Ensure your track is properly mixed and mastered for all platforms.'
+      },
+      {
+        id: 2,
+        title: 'Prepare artwork and visuals',
+        dueDate: new Date(releaseDateObj.getTime() - 7 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'General',
+        phase: 'pre-release',
+        description: 'Create cover art, social media graphics, and promotional images.'
+      },
+      {
+        id: 3,
+        title: 'Submit to distribution service',
+        dueDate: new Date(releaseDateObj.getTime() - 6 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Streaming',
+        phase: 'pre-release',
+        description: 'Upload to DistroKid, CD Baby, TuneCore, or similar service.'
+      },
+      {
+        id: 4,
+        title: 'Create teaser content',
+        dueDate: new Date(releaseDateObj.getTime() - 5 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Social Media',
+        phase: 'pre-release',
+        description: 'Short clips, visualizers, behind-the-scenes footage.'
+      },
+      {
+        id: 5,
+        title: 'Reach out to playlist curators',
+        dueDate: new Date(releaseDateObj.getTime() - 4 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Streaming',
+        phase: 'pre-release',
+        description: 'Contact relevant playlist owners on Spotify, Apple Music, etc.'
+      },
+      {
+        id: 6,
+        title: 'Submit to music blogs',
+        dueDate: new Date(releaseDateObj.getTime() - 3 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Media',
+        phase: 'pre-release',
+        description: 'Send to blogs like Pigeons & Planes, Pitchfork, etc.'
+      },
+      {
+        id: 7,
+        title: 'Set up pre-save links',
+        dueDate: new Date(releaseDateObj.getTime() - 3 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Streaming',
+        phase: 'pre-release',
+        description: 'Use Feature.fm, ToneDen, or similar services.'
+      },
+      {
+        id: 8,
+        title: 'Start teaser campaign',
+        dueDate: new Date(releaseDateObj.getTime() - 2 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Social Media',
+        phase: 'pre-release',
+        description: 'Post snippets/teasers with consistent hashtags.'
+      },
+      {
+        id: 9,
+        title: 'Prepare email newsletter',
+        dueDate: new Date(releaseDateObj.getTime() - 1 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Email',
+        phase: 'pre-release',
+        description: 'Draft announcement email to your subscriber base.'
+      },
+      {
+        id: 10,
+        title: 'Schedule release-day posts',
+        dueDate: new Date(releaseDateObj.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Social Media',
+        phase: 'pre-release',
+        description: 'Prepare and schedule all posts for launch day.'
+      }
+    ];
+
+    // Release day tasks
+    const releaseDayTasks = [
+      {
+        id: 11,
+        title: 'Share on all social platforms',
+        dueDate: releaseDate,
+        completed: false,
+        platform: 'Social Media',
+        phase: 'release-day',
+        description: 'Post on Instagram, Twitter, Facebook, TikTok, etc.'
+      },
+      {
+        id: 12,
+        title: 'Send email announcement',
+        dueDate: releaseDate,
+        completed: false,
+        platform: 'Email',
+        phase: 'release-day',
+        description: 'Send your pre-prepared email to your mailing list.'
+      },
+      {
+        id: 13,
+        title: 'Update website and bio links',
+        dueDate: releaseDate,
+        completed: false,
+        platform: 'Website',
+        phase: 'release-day',
+        description: 'Update your website, Linktree, and social media bios.'
+      },
+      {
+        id: 14,
+        title: 'Create release day story content',
+        dueDate: releaseDate,
+        completed: false,
+        platform: 'Social Media',
+        phase: 'release-day',
+        description: 'Instagram/Facebook stories, TikToks, etc.'
+      },
+      {
+        id: 15,
+        title: 'Thank your team and supporters',
+        dueDate: releaseDate,
+        completed: false,
+        platform: 'General',
+        phase: 'release-day',
+        description: 'Acknowledge everyone who helped make the release possible.'
+      }
+    ];
+
+    // Post-release tasks
+    const postReleaseTasks = [
+      {
+        id: 16,
+        title: 'Share streaming stats and milestones',
+        dueDate: new Date(releaseDateObj.getTime() + 1 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Social Media',
+        phase: 'post-release',
+        description: 'Post when you hit certain stream counts or playlist adds.'
+      },
+      {
+        id: 17,
+        title: 'Create "Behind the Song" content',
+        dueDate: new Date(releaseDateObj.getTime() + 2 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Social Media',
+        phase: 'post-release',
+        description: 'Share the story behind your song, lyrics, or production.'
+      },
+      {
+        id: 18,
+        title: 'Promote user-generated content',
+        dueDate: new Date(releaseDateObj.getTime() + 3 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Social Media',
+        phase: 'post-release',
+        description: 'Repost/share fans using your music in their content.'
+      },
+      {
+        id: 19,
+        title: 'Run social media ads',
+        dueDate: new Date(releaseDateObj.getTime() + 2 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Advertising',
+        phase: 'post-release',
+        description: 'Consider small-budget ads to relevant audiences.'
+      },
+      {
+        id: 20,
+        title: 'Track and analyze performance',
+        dueDate: new Date(releaseDateObj.getTime() + 4 * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        completed: false,
+        platform: 'Analytics',
+        phase: 'post-release',
+        description: 'Review streaming numbers, engagement, and demographic data.'
+      }
+    ];
+
+    // Add custom tasks from user input
+    const allTasks = [...preReleaseTasks, ...releaseDayTasks, ...postReleaseTasks, ...customTasks];
+    
+    // Add release-specific details
+    const tasksWithContext = allTasks.map(task => ({
+      ...task,
+      songTitle,
+      artistName,
+      releaseType
+    }));
+    
+    setPlan(tasksWithContext);
+  };
+
+  const toggleTaskCompletion = (taskId) => {
+    setPlan(plan.map(task => 
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const addCustomTask = () => {
+    if (!newTaskText.trim()) return;
+    
+    const newTask = {
+      id: Date.now(),
+      title: newTaskText,
+      dueDate: releaseDate, // Default to release date, can be adjusted
+      completed: false,
+      platform: 'Custom',
+      phase: activePhase,
+      description: 'Custom task',
+      isCustom: true
+    };
+    
+    setCustomTasks([...customTasks, newTask]);
+    setNewTaskText('');
+  };
+
+  const removeCustomTask = (taskId) => {
+    setCustomTasks(customTasks.filter(task => task.id !== taskId));
+    setPlan(plan.filter(task => task.id !== taskId));
+  };
+
+  const filterTasksByPhase = (tasks, phase) => {
+    return tasks.filter(task => task.phase === phase)
+      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+  };
+
+  const getTaskIcon = (platform) => {
+    switch(platform) {
+      case 'Social Media':
+        return <Instagram size={16} />;
+      case 'Streaming':
+        return <Play size={16} />;
+      case 'Media':
+        return <Globe size={16} />;
+      case 'Email':
+        return <Mail size={16} />;
+      case 'Analytics':
+        return <ChartBar size={16} />;
+      case 'Advertising':
+        return <DollarSign size={16} />;
+      case 'Website':
+        return <Globe size={16} />;
+      default:
+        return <Music size={16} />;
+    }
+  };
+
+  // Placeholder components for icons not imported
+  const Mail = ({ size }) => <span className="inline-block w-4 h-4">✉️</span>;
+  const ChartBar = ({ size }) => <span className="inline-block w-4 h-4">📊</span>;
+  const DollarSign = ({ size }) => <span className="inline-block w-4 h-4">💲</span>;
+
+  // Calculate completion percentage
+  const calculateCompletion = (tasks) => {
+    if (tasks.length === 0) return 0;
+    const completedTasks = tasks.filter(task => task.completed).length;
+    return Math.round((completedTasks / tasks.length) * 100);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-gray-200">
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+            Music Promotion Planner
+          </h1>
+          <p className="text-gray-400 max-w-lg mx-auto">
+            Create a comprehensive marketing plan for your next music release with custom timelines and actionable tasks.
+          </p>
+        </div>
+
+        {/* Release Details Form */}
+        <div className="bg-gray-800 rounded-xl p-6 mb-8 shadow-lg">
+          <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <Music className="mr-2 text-purple-400" />
+            Release Details
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Artist Name*</label>
+              <input
+                type="text"
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white"
+                placeholder="Your artist name"
+                value={artistName}
+                onChange={(e) => setArtistName(e.target.value)}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Release Title*</label>
+              <input
+                type="text"
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white"
+                placeholder="Your song or album title"
+                value={songTitle}
+                onChange={(e) => setSongTitle(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Release Date*</label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-2.5 text-gray-500" size={16} />
+                <input
+                  type="date"
+                  className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 pl-10 pr-3 text-white"
+                  value={releaseDate}
+                  onChange={(e) => setReleaseDate(e.target.value)}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Release Type</label>
+              <select
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white"
+                value={releaseType}
+                onChange={(e) => setReleaseType(e.target.value)}
+              >
+                <option value="single">Single</option>
+                <option value="ep">EP</option>
+                <option value="album">Album</option>
+                <option value="mixtape">Mixtape</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-gray-400 text-sm mb-1">Genre</label>
+              <input
+                type="text"
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white"
+                placeholder="e.g. Hip-Hop, House, Rock"
+                value={genre}
+                onChange={(e) => setGenre(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <div className="flex justify-center">
+            <button
+              className="bg-gradient-to-r from-purple-500 to-pink-600 text-white py-2 px-6 rounded-lg font-medium hover:opacity-90 transition-opacity"
+              onClick={generatePlan}
+            >
+              Generate Promotion Plan
+            </button>
+          </div>
+        </div>
+
+        {/* Promotional Plan */}
+        {plan.length > 0 && (
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+              <h2 className="text-2xl font-semibold mb-2 md:mb-0">
+                Promotion Plan for {artistName} - {songTitle}
+              </h2>
+              
+              <div className="flex space-x-2">
+                <button
+                  className={`px-4 py-1 rounded-lg text-sm font-medium ${
+                    activePhase === 'pre-release' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                  onClick={() => setActivePhase('pre-release')}
+                >
+                  Pre-Release
+                </button>
+                <button
+                  className={`px-4 py-1 rounded-lg text-sm font-medium ${
+                    activePhase === 'release-day' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                  onClick={() => setActivePhase('release-day')}
+                >
+                  Release Day
+                </button>
+                <button
+                  className={`px-4 py-1 rounded-lg text-sm font-medium ${
+                    activePhase === 'post-release' 
+                      ? 'bg-purple-600 text-white' 
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                  onClick={() => setActivePhase('post-release')}
+                >
+                  Post-Release
+                </button>
+              </div>
+            </div>
+
+            {/* Completion Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <div className="text-sm text-gray-400">
+                  {activePhase === 'pre-release' && 'Pre-Release Campaign Progress'}
+                  {activePhase === 'release-day' && 'Release Day Checklist Progress'}
+                  {activePhase === 'post-release' && 'Post-Release Campaign Progress'}
+                </div>
+                <div className="text-sm font-medium">
+                  {calculateCompletion(filterTasksByPhase(plan, activePhase))}%
+                </div>
+              </div>
+              <div className="w-full bg-gray-800 rounded-full h-2.5">
+                <div 
+                  className="bg-gradient-to-r from-purple-500 to-pink-600 h-2.5 rounded-full" 
+                  style={{ width: `${calculateCompletion(filterTasksByPhase(plan, activePhase))}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Tasks List */}
+            <div className="space-y-3 mb-8">
+              {filterTasksByPhase(plan, activePhase).map((task) => (
+                <div 
+                  key={task.id}
+                  className={`bg-gray-800 border border-gray-700 rounded-lg p-4 transition-colors ${
+                    task.completed ? 'bg-opacity-50 border-green-800' : ''
+                  }`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-start">
+                      <button
+                        className={`flex-shrink-0 w-5 h-5 mr-3 mt-1 rounded-full flex items-center justify-center border ${
+                          task.completed 
+                            ? 'bg-green-500 border-green-500 text-white' 
+                            : 'border-gray-500'
+                        }`}
+                        onClick={() => toggleTaskCompletion(task.id)}
+                      >
+                        {task.completed && <Check size={12} />}
+                      </button>
+                      
+                      <div>
+                        <h3 className={`font-medium ${task.completed ? 'line-through text-gray-400' : ''}`}>
+                          {task.title}
+                        </h3>
+                        <p className="text-sm text-gray-400 mt-1">{task.description}</p>
+                        
+                        <div className="flex items-center mt-2 text-xs">
+                          <div className="flex items-center text-gray-500 mr-4">
+                            <Calendar size={12} className="mr-1" />
+                            <span>{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                          </div>
+                          <div className="flex items-center text-gray-500">
+                            {getTaskIcon(task.platform)}
+                            <span className="ml-1">{task.platform}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {task.isCustom && (
+                      <button
+                        className="text-gray-500 hover:text-gray-300"
+                        onClick={() => removeCustomTask(task.id)}
+                      >
+                        <Trash size={16} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              
+              {filterTasksByPhase(plan, activePhase).length === 0 && (
+                <div className="text-center py-8 text-gray-400">
+                  No tasks for this phase yet. Add custom tasks below.
+                </div>
+              )}
+            </div>
+
+            {/* Add Custom Task */}
+            <div className="bg-gray-800 rounded-lg p-4 mb-8">
+              <h3 className="text-lg font-medium mb-3 flex items-center">
+                <Plus className="mr-2 text-purple-400" size={18} />
+                Add Custom Task
+              </h3>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  className="flex-grow bg-gray-700 border border-gray-600 rounded-lg py-2 px-3 text-white"
+                  placeholder="Enter task description"
+                  value={newTaskText}
+                  onChange={(e) => setNewTaskText(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addCustomTask()}
+                />
+                <button
+                  className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
+                  onClick={addCustomTask}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+
+            {/* Tips Section */}
+            <div className="bg-gray-800 bg-opacity-60 rounded-lg p-6">
+              <h3 className="text-lg font-medium mb-3 flex items-center">
+                <AlertCircle className="mr-2 text-purple-400" size={18} />
+                Promotion Tips
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h4 className="font-medium mb-2">Consistency is Key</h4>
+                  <p className="text-sm text-gray-400">
+                    Post regularly leading up to your release to build anticipation. Create a content calendar and stick to it.
+                  </p>
+                </div>
+                
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h4 className="font-medium mb-2">Leverage Your Network</h4>
+                  <p className="text-sm text-gray-400">
+                    Ask friends, family, and fellow musicians to share your release. Word of mouth is still powerful.
+                  </p>
+                </div>
+                
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h4 className="font-medium mb-2">Engage With Your Audience</h4>
+                  <p className="text-sm text-gray-400">
+                    Respond to comments and messages. Create polls and questions to boost engagement.
+                  </p>
+                </div>
+                
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h4 className="font-medium mb-2">Track Your Results</h4>
+                  <p className="text-sm text-gray-400">
+                    Use analytics to see what's working. Adjust your strategy based on what resonates with your audience.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default MusicPromotionPlanner;
