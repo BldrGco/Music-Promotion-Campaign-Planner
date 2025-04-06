@@ -1,0 +1,149 @@
+/* styles.css */
+
+/* Global Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Header Animation */
+h1 {
+  animation: fadeIn 1s ease-out;
+}
+
+/* Form Styling */
+.bg-gray-800 {
+  transition: all 0.3s ease;
+}
+
+.bg-gray-800:hover {
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+}
+
+/* Input Fields */
+input,
+select {
+  transition: all 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #9333ea;
+  box-shadow: 0 0 8px rgba(147, 51, 234, 0.4);
+  outline: none;
+}
+
+/* Button Hover Effects */
+button.bg-gradient-to-r {
+  transition: all 0.3s ease;
+}
+
+button.bg-gradient-to-r:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.5);
+}
+
+/* Task Card Animation */
+.task-card {
+  animation: slideUp 0.5s ease-out;
+  transition: all 0.3s ease;
+}
+
+.task-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Completed Task Styling */
+.task-card.completed {
+  opacity: 0.7;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1));
+}
+
+/* Progress Bar Animation */
+.progress-bar {
+  transition: width 0.5s ease-in-out;
+}
+
+/* Phase Buttons */
+.phase-button {
+  transition: all 0.3s ease;
+}
+
+.phase-button:hover:not(.active) {
+  transform: scale(1.05);
+}
+
+/* Tips Section */
+.tips-card {
+  transition: all 0.3s ease;
+}
+
+.tips-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+}
+
+/* Custom Task Input */
+.custom-task-input {
+  transition: all 0.3s ease;
+}
+
+.custom-task-input:focus {
+  border-color: #9333ea;
+  box-shadow: 0 0 8px rgba(147, 51, 234, 0.4);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9333ea;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7e22ce;
+}
